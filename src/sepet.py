@@ -11,5 +11,5 @@ class AlisverisSepeti:
         elif indirim_turu == "ÖĞRENCİ":
             return self.toplam_tutar * 0.90  # %10 indirim
         else:
-            return self.toplam_tutaro
+            return self.toplam_tutar
 
