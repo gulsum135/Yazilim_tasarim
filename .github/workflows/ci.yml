@@ -1,0 +1,29 @@
+name: Yazilim Tasarim Pattern Kontrolu (CI)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Depoyu Bilgisayara Cek
+      uses: actions/checkout@v3
+
+    - name: Python Ortamini Kur
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Bagimliliklari Yukle
+      run: |
+        python -m pip upgrade pip
+        # Eğer projenizde harici bir kütüphane olsaydı buraya yazılırdı
+
+    - name: Sepet Projesini ve Test Senaryolarini Calistir
+      run: |
+        python src/sepet.py
