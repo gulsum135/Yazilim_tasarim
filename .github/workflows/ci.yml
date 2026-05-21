@@ -19,11 +19,10 @@ jobs:
       with:
         python-version: '3.10'
 
-    - name: Bagimliliklari Yukle
+    - name: Pip Paket Yoneticisini Guncelle
       run: |
-        python -m pip upgrade pip
-        # Eğer projenizde harici bir kütüphane olsaydı buraya yazılırdı
+        python -m pip install --upgrade pip
 
-    - name: Sepet Projesini ve Test Senaryolarini Calistir
+    - name: Sepet Projesini Calistir ve Test Et
       run: |
-        python src/sepet.py
+        python src/sepet.pyS
