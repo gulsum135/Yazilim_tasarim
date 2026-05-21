@@ -25,7 +25,7 @@ Sistem; temel bir alışveriş sepeti üzerine dinamik olarak indirimlerin (Efsa
 
 Projenin nesne yönelimli tasarım mimarisini ve örüntülerin birbiriyle olan ilişkisini gösteren UML Sınıf Diyagramı aşağıda sunulmuştur:
 
-![E-Ticaret Sepeti UML Sınıf Diyagramı](docs/diagrams/sepet_mimari_uml.png)
+![E-Ticaret Sepeti UML Sınıf Diyagramı](docs/diagrams/mimari_diagram.png)
 
 ---
 
