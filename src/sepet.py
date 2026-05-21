@@ -73,6 +73,15 @@ class AlisverisGecidiFacade:
         self.stok = StokSistemi()
         self.odeme = OdemeSistemi()
         self.kargo = KargoSistemi()
+    def toplam_hesapla(self, indirim_turu):
+        if indirim_turu == "EFSANE_KASIM":
+            return self.toplam_tutar * 0.50  # %50 indirim
+        elif indirim_turu == "HOŞ_GELDİN_KUPONU":
+            return self.toplam_tutar - 50     # 50 TL indirim
+        elif indirim_turu == "ÖĞRENCİ":
+            return self.toplam_tutar * 0.90  # %10 indirim
+        else:
+            return self.toplam_tutar
 
     def alisverisi_tamamla(self, sepet: SepetBileseni):
         son_tutar = sepet.fiyat_hesapla()
