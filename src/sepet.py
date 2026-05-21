@@ -7,13 +7,13 @@ class IndirimStratejisi(ABC):
         pass
 
 class EfsaneCumaIndirimi(IndirimStratejisi):
-    def uygula(self, tutar: float) -> float: return tutar * 0.50
+    def uygula(self, tutar: float) -> float: return tutar * 0.50  #%50 indirm uygulanacak
 
 class HosGeldinKuponuIndirimi(IndirimStratejisi):
-    def uygula(self, tutar: float) -> float: return max(0, tutar - 50)
+    def uygula(self, tutar: float) -> float: return max(0, tutar - 50)  #50 tl indrim
 
 class StandartFiyat(IndirimStratejisi):
-    def uygula(self, tutar: float) -> float: return tutar
+    def uygula(self, tutar: float) -> float: return tutar  
 
 class IndirimFabrikasi:
     @staticmethod
@@ -25,6 +25,9 @@ class IndirimFabrikasi:
         return indirim_haritasi.get(indirim_turu, StandartFiyat())
 
 
+# ==========================================
+# FAZ 2: STRUCTURAL (DECORATOR)
+# ==========================================
 class SepetBileseni(ABC):
     @abstractmethod
     def fiyat_hesapla(self) -> float:
@@ -53,12 +56,10 @@ class KargoSigortasiEkle(SepetDecorator):
 
 
 
-
 class SiparisGozlemcisi(ABC):
     @abstractmethod
     def guncelle(self, mesaj: str):
         pass
-
 
 class SmsBildirimci(SiparisGozlemcisi):
     def guncelle(self, mesaj: str):
@@ -84,7 +85,7 @@ class AlisverisGecidiFacade:
         self.stok = StokSistemi()
         self.odeme = OdemeSistemi()
         self.kargo = KargoSistemi()
-        self._gozlemciler = []  # Gözlemci listesi
+        self._gozlemciler = []
 
     def gozlemci_ekle(self, gozlemci: SiparisGozlemcisi):
         self._gozlemciler.append(gozlemci)
@@ -105,15 +106,14 @@ class AlisverisGecidiFacade:
         ]
         
         cikis_mesaji = f"Siparisiniz {son_tutar} TL ile tamamlanmistir."
-        # Davranışı tetikliyoruz (Observer eylemi)
         self._herkese_haber_ver(cikis_mesaji)
         
         return " | ".join(rapor)
 
-# Basit Bir Derleme Doğrulama Testi (CI hattının patlamaması için)
+# Birim Test Senaryosu
 def test_sepet_akisi():
-    sepet = AlisverisSepeti(100, "EFSANE_CUMA") # 50 TL kalır
-    suslu_sepet = HediyePaketiEkle(sepet) # 50 + 15 = 65 TL kalır
+    sepet = AlisverisSepeti(100, "EFSANE_CUMA")
+    suslu_sepet = HediyePaketiEkle(sepet)
     
     facade = AlisverisGecidiFacade()
     facade.gozlemci_ekle(SmsBildirimci())
