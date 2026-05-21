@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class IndirimStratejisi(ABC):
     @abstractmethod
     def uygula(self, tutar):
@@ -26,16 +27,25 @@ class IndirimFabrikasi:
 
 
 
+
 class SepetBileseni(ABC):
     @abstractmethod
     def fiyat_hesapla(self) -> float:
         pass
 
-# Eski sepetimiz artık bir 'SepetBileseni' interface'ine bağlı (OCP korundu)
+
+class SepetBileseni(ABC):
+    @abstractmethod
+    def fiyat_hesapla(self) -> float:
+        pass
+
+
+
 class AlisverisSepeti(SepetBileseni):
     def __init__(self, toplam_tutar, indirim_turu=""):
         self.toplam_tutar = toplam_tutar
         self.indirim_turu = indirim_turu
+
 
     def fiyat_hesapla(self) -> float:
         indirim = IndirimFabrikasi.indirim_olustur(self.indirim_turu)
@@ -49,7 +59,7 @@ class SepetDecorator(SepetBileseni):
     def fiyat_hesapla(self) -> float:
         return self._sepet.fiyat_hesapla()
 
-# Somut Süsleyiciler (Mevcut sınıflara dokunmadan fiyatı süslüyoruz)
+
 class HediyePaketiEkle(SepetDecorator):
     def fiyat_hesapla(self) -> float:
         return self._sepet.fiyat_hesapla() + 15.0  # Hediye paketi +15 TL
@@ -76,6 +86,56 @@ class AlisverisGecidiFacade:
         self.odeme = OdemeSistemi()
         self.kargo = KargoSistemi()
 
+
+
+    def fiyat_hesapla(self) -> float:
+        indirim = IndirimFabrikasi.indirim_olustur(self.indirim_turu)
+        return indirim.uygula(self.toplam_tutar)
+
+
+class SepetDecorator(SepetBileseni):
+    def __init__(self, sepet: SepetBileseni):
+        self._sepet = sepet
+
+    def fiyat_hesapla(self) -> float:
+        return self._sepet.fiyat_hesapla()
+
+
+class HediyePaketiEkle(SepetDecorator):
+    def fiyat_hesapla(self) -> float:
+        return self._sepet.fiyat_hesapla() + 15.0  # Hediye paketi +15 TL
+
+class KargoSigortasiEkle(SepetDecorator):
+    def fiyat_hesapla(self) -> float:
+        return self._sepet.fiyat_hesapla() + 25.0  # Kargo sigortası +25 TL
+
+
+class StokSistemi:
+    def kontrol_et(self): return "Stok onaylandi."
+
+class OdemeSistemi:
+    def tahsil_et(self, tutar): return f"{tutar} TL tahsil edildi."
+
+class KargoSistemi:
+    def kayit_olustur(self): return "Kargo fise eklendi."
+
+
+class AlisverisGecidiFacade:
+    def __init__(self):
+        self.stok = StokSistemi()
+        self.odeme = OdemeSistemi()
+        self.kargo = KargoSistemi()
+    def toplam_hesapla(self, indirim_turu):
+        if indirim_turu == "EFSANE_KASIM":
+            return self.toplam_tutar * 0.50  # %50 indirim
+        elif indirim_turu == "HOŞ_GELDİN_KUPONU":
+            return self.toplam_tutar - 50     # 50 TL indirim
+        elif indirim_turu == "ÖĞRENCİ":
+            return self.toplam_tutar * 0.90  # %10 indirim
+        else:
+            return self.toplam_tutar
+
+
     def alisverisi_tamamla(self, sepet: SepetBileseni):
         son_tutar = sepet.fiyat_hesapla()
         rapor = [
@@ -84,3 +144,4 @@ class AlisverisGecidiFacade:
             self.kargo.kayit_olustur()
         ]
         return " | ".join(rapor)
+
